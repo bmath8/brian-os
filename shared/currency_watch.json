@@ -1,0 +1,51 @@
+{
+  "_doc": "Drives currency_agent.py (Modernization, Currency & Discovery). You maintain: releases_watch, auto_apply_allowlist, auto_merge_safe, github_owner, discovery_sources. Repos auto-discovered on disk. blog_feeds = RSS of Brian's curated 'AI GOATS' people who publish (auto-pulled, unlike X). X handles live in x_watch.json (browser-assisted).",
+  "github_owner": "bmath8",
+  "scan_roots": ["C:\\Brian\\02_Projects", "C:\\Users\\mathe\\OneDrive\\Desktop"],
+  "skip_dirs": ["_archive", "_staging", "_peek", "node_modules", ".venv", "_wsl_legacy", "Harmony_backup"],
+  "employer_facing": ["pokemon-drop", "portfolio"],
+  "auto_apply_safe": true,
+  "auto_merge_safe": true,
+  "auto_apply_allowlist": ["pokemon-drop"],
+  "stale_days": 45,
+  "hermes_repo": "NousResearch/hermes-agent",
+  "releases_watch": [
+    {"repo": "NousResearch/hermes-agent", "why": "THE FLEET HOST - new features ship weekly; adopt them"},
+    {"repo": "vercel/next.js", "why": "pokemon-drop + portfolio host"},
+    {"repo": "facebook/react", "why": "pokemon-drop UI"},
+    {"repo": "nodejs/node", "why": "runtime"},
+    {"repo": "ollama/ollama", "why": "local model engine (the fleet's brain)"},
+    {"repo": "tailwindlabs/tailwindcss", "why": "pokemon-drop styling"},
+    {"repo": "vitejs/vite", "why": "some frontends"},
+    {"repo": "anthropics/anthropic-sdk-python", "why": "Claude SDK"},
+    {"repo": "anthropics/claude-code", "why": "Claude Code / agent tooling"},
+    {"repo": "supabase/supabase", "why": "boombox backend"},
+    {"repo": "Aider-AI/aider", "why": "top open-source coding agent"},
+    {"repo": "vllm-project/vllm", "why": "high-throughput local inference"},
+    {"repo": "ggml-org/llama.cpp", "why": "local inference core under Ollama"}
+  ],
+  "discovery_sources": {
+    "hn_queries": ["AI agent", "local LLM", "Claude", "open source AI", "Ollama", "Nous Research"],
+    "hn_min_points": 40,
+    "github_trending_rss": [
+      "https://mshibanami.github.io/GitHubTrendingRSS/daily/python.xml",
+      "https://mshibanami.github.io/GitHubTrendingRSS/daily/typescript.xml",
+      "https://mshibanami.github.io/GitHubTrendingRSS/weekly/all.xml"
+    ],
+    "blog_feeds": [
+      "https://simonwillison.net/atom/everything/",
+      "https://www.interconnects.ai/feed",
+      "https://magazine.sebastianraschka.com/feed",
+      "https://lilianweng.github.io/index.xml",
+      "https://newsletter.pragmaticengineer.com/feed",
+      "https://www.latent.space/feed",
+      "https://jack-clark.net/feed/",
+      "https://huyenchip.com/feed.xml",
+      "https://hamel.dev/index.xml",
+      "https://martinfowler.com/feed.atom",
+      "https://www.joshwcomeau.com/rss.xml",
+      "https://addyosmani.com/rss.xml"
+    ],
+    "arxiv_query": "http://export.arxiv.org/api/query?search_query=cat:cs.AI+AND+abs:agent&sortBy=submittedDate&sortOrder=descending&max_results=12"
+  }
+}

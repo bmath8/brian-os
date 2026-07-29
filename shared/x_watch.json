@@ -1,0 +1,19 @@
+{
+  "_doc": "Seed + config for X (Twitter) discovery. X has NO free API (Nitter/snscrape dead), so this surface is read BROWSER-ASSISTED (Claude in Chrome, Brian's session) on demand - not by the unattended cron. The scan extracts tools/projects/releases/links, dedupes against discovery-seen, adds the good ones to the discovery report, AND proposes NEW proven accounts (deep cuts) found via who the trusted set amplifies. Many of these people ALSO blog - those RSS feeds are in currency_watch.json blog_feeds and get pulled automatically. See X_DISCOVERY.md.",
+  "your_handle": "",
+  "surfaces": ["bookmarks", "home", "watched_accounts", "lists"],
+  "lists": [],
+  "discover_new_accounts": true,
+  "watched_accounts": {
+    "researchers_thinkers": ["karpathy", "ylecun", "polynoamial", "svpino", "rasbt", "lilianweng", "DAIR_AI", "_jasonwei"],
+    "practical_llm_eng": ["simonw", "HamelHusain", "chipro", "natolambert", "jayalammar", "maximelabonne", "_akhaliq", "swyx"],
+    "frontier_labs_leaders": ["gdb", "sama", "DarioAmodei", "jackclarkSF", "AnthropicAI", "claudeai", "OpenAI", "AIatMeta", "GoogleDeepMind", "Thom_Wolf", "osanseviero", "jeremyphoward", "AndrewYNg"],
+    "agents_and_open_source": ["steipete", "NousResearch", "ollama", "vercel", "cursor_ai"],
+    "software_craft": ["GergelyOrosz", "KentBeck", "martinfowler", "ThePrimeagen"],
+    "frontend_design": ["leerob", "JoshWComeau", "adamwathan", "addyosmani", "raunofreiberg", "emilkowalski_"],
+    "solo_vibecoders_his_lane": ["jackfriks", "rileybrown", "gregisenberg", "corbin_braun"],
+    "agent_builders_educators": ["DavidOndrej1", "MatthewBerman", "cole_medin", "MattVidPro", "mreflow", "doodlestein"]
+  },
+  "candidate_accounts": [],
+  "_source": "Merged from Brian's own 'Learn from the AI GOATS' pack (people-to-follow.md / creators.csv) + a 2026 best-of scan. Handles inferred from names - verify on first scan. Add your_handle + any Lists."
+}

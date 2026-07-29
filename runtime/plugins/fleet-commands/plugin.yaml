@@ -1,0 +1,5 @@
+name: fleet-commands
+version: 0.1.0
+description: "Two-way control of Brian's agent fleet from chat. Registers native slash commands (/fleet /queue /approve /reject /grade /snooze) that call the tested commands.py handler over the comms blackboard. Drafting/filing/grading only - nothing sends, spends, or deploys."
+author: Brian
+kind: standalone

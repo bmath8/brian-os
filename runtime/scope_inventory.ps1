@@ -1,0 +1,143 @@
+<#
+scope_inventory.ps1 -- Enumerate EVERY git repo on this machine and write C:\Brian\SCOPE.md.
+
+WHY THIS EXISTS (2026-07-28):
+  Repeated audits kept "discovering" projects because nobody had ever counted them. The
+  working assumption was "code lives in C:\Brian\02_Projects" (10 repos). The real number
+  is ~40 active repos spread across C:\Brian, C:\Users\mathe\Dev, Desktop, Documents and
+  OneDrive -- plus ~24 stale/archive copies and ~56 tooling caches.
+
+  The failure was not incomplete coverage; it was asserting a DENOMINATOR that had never
+  been measured. Coverage claims are worthless without a counted universe. This script
+  makes the universe countable on demand, so scope is a fact instead of an assumption.
+
+  Regenerate it rather than trusting a dated snapshot -- that is the whole point. Eight
+  hand-written audit docs went stale precisely because they were hand-written.
+
+USAGE:  powershell -NoProfile -ExecutionPolicy Bypass -File scope_inventory.ps1
+        (add -Fast to skip the GitHub visibility lookup)
+#>
+param([switch]$Fast)
+
+$ErrorActionPreference = 'Continue'
+$roots = @('C:\Brian', 'C:\Brian HQ', 'C:\Users\mathe')
+$outFile = 'C:\Brian\SCOPE.md'
+
+Write-Host "Scanning for .git directories..."
+$all = @()
+foreach ($r in $roots) {
+    if (-not (Test-Path $r)) { continue }
+    Get-ChildItem $r -Recurse -Directory -Force -Filter '.git' -EA SilentlyContinue |
+        Where-Object { $_.FullName -notmatch 'node_modules|\\AppData\\Local\\Temp|\\\.venv|site-packages|\\\.cache\\' } |
+        ForEach-Object { $all += $_.Parent.FullName }
+}
+$all = $all | Sort-Object -Unique
+
+# Classify. Tooling caches and archive snapshots are noise for planning purposes, but we
+# still COUNT them so the totals reconcile and nothing is silently dropped.
+$reTool    = '\\uv\\cache|\\\.codex\\|\\\.gemini\\|\\plugins\\marketplaces|hermes-agent|local-agent-mode-sessions|\\\.openclaw\\|cowork_plugins|\\\.claude\\plugins'
+$reArchive = 'Brian HQ|Desktop Cleanup|antigravity-backup|STALE'
+
+$tool    = @($all | Where-Object { $_ -match $reTool })
+$archive = @($all | Where-Object { $_ -notmatch $reTool -and $_ -match $reArchive })
+$real    = @($all | Where-Object { $_ -notmatch $reTool -and $_ -notmatch $reArchive })
+
+Write-Host "  $($all.Count) total / $($real.Count) real / $($archive.Count) archive / $($tool.Count) tooling"
+
+$rows = @()
+foreach ($p in $real) {
+    Push-Location $p -EA SilentlyContinue
+    $branch = (git rev-parse --abbrev-ref HEAD 2>$null)
+    $dirty  = @(git status --porcelain 2>$null).Count
+    $remote = (git remote get-url origin 2>$null)
+    $last   = (git log -1 --format='%cd' --date=short 2>$null)
+    $unp    = (git rev-list --count '@{u}..HEAD' 2>$null)
+    if ([string]::IsNullOrWhiteSpace($unp)) { $unp = 'n/a' }
+
+    # Commit count. A repo with content but ZERO commits is the worst case and does not
+    # look like it: the .git folder is present, so it reads as "version controlled", while
+    # nothing has ever been captured. Found 2026-07-28 in 7 repos holding real work
+    # (Money Maker, PC Management, Music Game, CK (Personal Agent), RAM Kit Price
+    # Monitoring, the OneDrive AI Job Hunter copy, Codex). NO-REMOTE alone did not surface
+    # these -- the failure is one step earlier than "never pushed".
+    # MUST run inside Push-Location: the first version of this sat after Pop-Location and
+    # so counted commits in the wrong directory, reporting 0 findings for all 40 repos.
+    $commits = (git rev-list --all --count 2>$null | Select-Object -First 1)
+    if ([string]::IsNullOrWhiteSpace($commits)) { $commits = '0' }
+
+    $vis = ''
+    if (-not $Fast -and $remote -match 'github\.com[:/]([^/]+)/([^/.]+)') {
+        $vis = (gh repo view "$($Matches[1])/$($Matches[2])" --json visibility -q .visibility 2>$null)
+    }
+    Pop-Location -EA SilentlyContinue
+
+    $contentFiles = @(Get-ChildItem $p -Recurse -File -Force -EA SilentlyContinue |
+                      Where-Object { $_.FullName -notmatch '\\\.git\\' }).Count
+
+    # Risk flags -- the whole reason to look at this table.
+    $risk = @()
+    if ($commits -eq '0' -and $contentFiles -gt 0) { $risk += "NO-COMMITS($contentFiles files)" }
+    if (-not $remote)                  { $risk += 'NO-REMOTE' }
+    if ($unp -ne 'n/a' -and [int]::TryParse($unp, [ref]([int]$null)) -and [int]$unp -gt 0) { $risk += "UNPUSHED:$unp" }
+    if ($p -match 'OneDrive')          { $risk += 'ONEDRIVE-SYNC' }
+
+    $rows += [PSCustomObject]@{
+        Name   = Split-Path $p -Leaf
+        Path   = $p
+        Branch = $branch
+        Vis    = if ($vis) { $vis } else { '-' }
+        Dirty  = $dirty
+        Unpushed = $unp
+        Last   = $last
+        Remote = if ($remote) { ($remote -replace '^https://github\.com/','' -replace '\.git$','') } else { 'NONE' }
+        Risk   = ($risk -join ' ')
+    }
+}
+
+$sb = [System.Text.StringBuilder]::new()
+[void]$sb.AppendLine("# SCOPE -- every git repo on this machine")
+[void]$sb.AppendLine("")
+[void]$sb.AppendLine("_Generated by ``runtime/scope_inventory.ps1`` on $(Get-Date -Format 'yyyy-MM-dd HH:mm'). **Regenerate; do not hand-edit.**_")
+[void]$sb.AppendLine("")
+[void]$sb.AppendLine("| Total .git | Real projects | Archive/stale | Tooling caches |")
+[void]$sb.AppendLine("|---:|---:|---:|---:|")
+[void]$sb.AppendLine("| $($all.Count) | $($real.Count) | $($archive.Count) | $($tool.Count) |")
+[void]$sb.AppendLine("")
+[void]$sb.AppendLine("## Risk summary")
+$noCommits = @($rows | Where-Object { $_.Risk -match 'NO-COMMITS' })
+$noRemote = @($rows | Where-Object { $_.Risk -match 'NO-REMOTE' })
+$unpushed = @($rows | Where-Object { $_.Risk -match 'UNPUSHED' })
+$onedrive = @($rows | Where-Object { $_.Risk -match 'ONEDRIVE' })
+[void]$sb.AppendLine("- **WORST -- content but ZERO commits (looks version-controlled, captures nothing): $($noCommits.Count)** -- $(($noCommits.Name | Sort-Object) -join ', ')")
+[void]$sb.AppendLine("- **No remote (total-loss risk if the drive dies): $($noRemote.Count)** -- $(($noRemote.Name | Sort-Object) -join ', ')")
+[void]$sb.AppendLine("- **Unpushed commits (local-only work): $($unpushed.Count)** -- $(($unpushed | ForEach-Object { "$($_.Name)($($_.Unpushed))" }) -join ', ')")
+[void]$sb.AppendLine("- **Git repo inside OneDrive (sync can corrupt .git): $($onedrive.Count)**")
+[void]$sb.AppendLine("")
+[void]$sb.AppendLine("## Real project repos")
+[void]$sb.AppendLine("")
+[void]$sb.AppendLine("| Repo | Vis | Branch | Dirty | Unpushed | Last commit | Remote | Risk |")
+[void]$sb.AppendLine("|---|---|---|---:|---|---|---|---|")
+foreach ($r in ($rows | Sort-Object @{e={$_.Risk -ne ''};Descending=$true}, Name)) {
+    [void]$sb.AppendLine("| ``$($r.Name)`` | $($r.Vis) | $($r.Branch) | $($r.Dirty) | $($r.Unpushed) | $($r.Last) | $($r.Remote) | $($r.Risk) |")
+}
+[void]$sb.AppendLine("")
+[void]$sb.AppendLine("<details><summary>Full paths</summary>")
+[void]$sb.AppendLine("")
+foreach ($r in ($rows | Sort-Object Name)) { [void]$sb.AppendLine("- ``$($r.Name)`` -- ``$($r.Path)``") }
+[void]$sb.AppendLine("")
+[void]$sb.AppendLine("</details>")
+[void]$sb.AppendLine("")
+[void]$sb.AppendLine("<details><summary>Archive / stale copies ($($archive.Count)) -- candidates for consolidation</summary>")
+[void]$sb.AppendLine("")
+foreach ($a in $archive) { [void]$sb.AppendLine("- ``$a``") }
+[void]$sb.AppendLine("")
+[void]$sb.AppendLine("</details>")
+[void]$sb.AppendLine("")
+[void]$sb.AppendLine("<details><summary>Tooling caches ($($tool.Count)) -- ignore, not yours</summary>")
+[void]$sb.AppendLine("")
+foreach ($t in $tool) { [void]$sb.AppendLine("- ``$t``") }
+[void]$sb.AppendLine("")
+[void]$sb.AppendLine("</details>")
+
+[System.IO.File]::WriteAllText($outFile, $sb.ToString(), (New-Object System.Text.UTF8Encoding($false)))
+Write-Host "Wrote $outFile"

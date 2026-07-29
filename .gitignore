@@ -1,0 +1,53 @@
+# Secrets — never commit
+.env
+*.env
+# sandbox holds the .env + setup scripts that embed the bot token — keep it all local
+sandbox/
+sandbox/.env
+sandbox/secrets/
+# Logs can stay, but not env dumps
+*.token
+
+# Agent machine-state: caches, seen-sets, indices. Rewritten on every agent run and
+# meaningless as source. These were tracked until 2026-07-28, which kept the repo
+# permanently ~40 files dirty -> `git status` was pure noise -> real code changes were
+# invisible in it -> committing felt pointless -> 13 days of work sat uncommitted with
+# no off-machine backup. The dirty repo CAUSED the backup gap; this un-breaks the signal.
+# (Human-readable agent OUTPUT like comms/learn/wiki/ and comms/*.md is deliberately
+# still tracked -- that's knowledge worth versioning. Only machine state is ignored.)
+comms/.cache/
+comms/.memory/
+comms/.srs/
+comms/.currency_seen.json
+comms/.gigs_seen.json
+comms/.needs_age.json
+comms/.currency_discovery_seen.json
+
+# Runtime blackboard state (changes every agent run — not source)
+comms/system_status.md
+comms/state.json
+comms/daily_brief.md
+comms/recall.md
+comms/model_review.md
+comms/finance.md
+comms/health.md
+comms/scout.md
+comms/resource_status.json
+comms/.last_alerts
+comms/queue/
+comms/review/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# skill_miner.py review-only drafts (local output, never source)
+skills/_drafts/
+
+# OS
+Thumbs.db
+.DS_Store
+
+logs/.guardian_beat

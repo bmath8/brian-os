@@ -1,0 +1,34 @@
+# Brian OS fleet - Python dependencies
+#
+# The fleet is deliberately STDLIB-FIRST: agents use urllib/json/sqlite3 rather
+# than pulling packages. Everything below is a genuine exception, and the list is
+# short on purpose. Keep it that way -- a new dependency is a new way to break at
+# 6:45am while nobody is watching.
+#
+# Install into the interpreter that actually runs the cron scripts:
+#   %LOCALAPPDATA%\hermes\hermes-agent\venv\Scripts\python.exe -m pip install -r requirements.txt
+#
+# NOTE: this file did not exist until 2026-07-28. Its absence is why the calendar
+# agent sat broken ("No module named 'icalendar'") with nothing to catch it. The
+# REQUIRED block below is verified on every boot/revive by boot_smoke.py's
+# "Deps" check -- if you add a required package here, add its IMPORT name to
+# REQUIRED_IMPORTS in boot_smoke.py too (pip name != import name sometimes).
+
+# ---- REQUIRED (an agent breaks without these) ----
+icalendar==7.2.2                 # calendar_agent: parse the Google ICS feed
+recurring-ical-events==3.8.2     # calendar_agent: expand recurring events (import: recurring_ical_events)
+
+# ---- DEV / TEST ----
+# Without this, tests/test_powershell.py silently fails to IMPORT and unittest
+# discovery reports an error instead of running it -- so the PowerShell infra
+# (process_guardian / fleet_keepalive) went untested. Installed 2026-07-28:
+# suite went from 79 tests + 1 load error to 81 passing.
+pytest>=8.0
+
+# ---- OPTIONAL (lazy-imported; absence degrades gracefully, never crashes) ----
+# caldav          # calendar_agent._collect_icloud() -- ONLY needed if you switch
+#                 # from GCAL_ICS_URL to APPLE_ID/APPLE_APP_PASSWORD. Currently
+#                 # unused: the Google ICS path is the configured one.
+# fsrs            # srs_fsrs.py -- DRAFT, not wired into srs.py. next_interval_days()
+#                 # falls back to the classic doubling rule if absent, so the
+#                 # learning agent cannot break. Install only when promoting FSRS.

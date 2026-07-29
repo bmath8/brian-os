@@ -1,0 +1,12 @@
+[wsl2]
+# Was memory=2GB / swap=512MB — far too tight; under host memory pressure the WSL VM
+# got OOM-torn-down overnight and took the whole fleet with it. More headroom + a real
+# swap file so WSL swaps to disk instead of dying. autoMemoryReclaim returns idle RAM
+# to Windows so this doesn't starve the 16GB host.
+memory=4GB
+processors=2
+swap=8GB
+localhostForwarding=true
+
+[experimental]
+autoMemoryReclaim=gradual

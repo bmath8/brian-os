@@ -1,0 +1,65 @@
+{
+  "_comment": "Model registry for the fleet router. Open/free LOCAL models are always tried first, chosen by capability. Cloud is escalation only. Update this file as you pull new local models (ollama pull ...).",
+  "policy": "Try local first, every time. Escalate to cloud ONLY on: local failure, low-confidence self-check, or task explicitly flagged user_facing_final / high_stakes.",
+  "local_models": {
+    "qwen3:8b": {
+      "tier": 1,
+      "size_gb": 5,
+      "speed": "fast",
+      "reasoning": "good",
+      "installed": true,
+      "note": "FLEET DEFAULT. Fits 12GB VRAM at small ctx; safe under the 16GB RAM pressure. All 5 cron agents run on this.",
+      "best_for": ["briefs", "summaries", "drafts", "classification", "recall", "quick coding"]
+    },
+    "qwen3:14b": {
+      "tier": 1,
+      "size_gb": 9,
+      "speed": "moderate",
+      "reasoning": "strong",
+      "installed": true,
+      "note": "Daily-driver target once 64GB RAM lands. Today: only via safe_model gate (downgrades to 8b under memory pressure, which is ~always on 16GB).",
+      "best_for": ["moderate/complex reasoning", "user-facing drafts"]
+    },
+    "deepseek-r1:14b": {
+      "tier": 1,
+      "size_gb": 9,
+      "speed": "slow",
+      "reasoning": "hard",
+      "installed": true,
+      "note": "Hard logic/math/debugging — keeps 'hard' tasks LOCAL instead of escalating to paid cloud. Heavy on 16GB; reserve for latency-tolerant router tasks.",
+      "best_for": ["hard reasoning", "math", "debugging"]
+    }
+  },
+  "recommended_pulls": {
+    "_note": "Tuned to Brian's rig (RTX 4070 Super 12GB VRAM, 16GB RAM) per hardware analysis 2026-06-16. All fit and run local/free.",
+    "qwen3:14b": "DAILY DRIVER — Q4 ~9GB, fits VRAM. Strong general + coding. Handles moderate/complex.",
+    "qwen3:8b": "FAST HELPER ~5GB — quick answers, summaries, small coding. Handles simple/trivial faster than llama3.",
+    "deepseek-r1:14b": "REASONING ~9GB — hard logic/math/debugging. Keeps 'hard' tasks LOCAL instead of escalating to paid cloud.",
+    "nomic-embed-text": "embeddings for search/retrieval across Harmony + comms (small)."
+  },
+  "cloud_fallback": {
+    "_note": "Escalation only. Requires an API key in ~/.hermes/.env (never committed). One OpenRouter key reaches most of these. Ladder + costs from the 2026-06-17 model review (see MODELS_AND_TOOLS_REVIEW_2026-06-17.md). GLM-5.2/Kimi are CLOUD-only — far too big to run on a 12GB/16GB box.",
+    "value_first": [
+      {"model": "deepseek/deepseek-v4-flash", "tier": "B", "cost": "~$0.01/run", "use": "cheap 'good enough' cloud pass, ~3 min"}
+    ],
+    "cheap_tierA_coding": [
+      {"model": "moonshotai/kimi-k2.7-code", "tier": "A", "cost": "~$0.30/run", "use": "Tier-A coding at ~1/4 frontier cost"},
+      {"model": "z-ai/glm-5.2", "tier": "A", "cost": "subscription (Z.ai)", "use": "flat-rate Tier-A coding"},
+      {"model": "google/gemini-3.1-pro", "tier": "A", "cost": "~$0.40/run", "use": "fast cheap Tier-A"}
+    ],
+    "frontier": [
+      {"model": "anthropic/claude-opus-4-8", "tier": "A", "cost": "~$1.10/run", "use": "highest-stakes / final job-application drafts"},
+      {"model": "openai/gpt-5.5-codex", "tier": "A", "use": "alt frontier coder"}
+    ],
+    "legacy_cheap": ["claude-haiku-4-5", "gpt-5-mini", "gemini-flash-lite"]
+  },
+  "complexity_to_model": {
+    "_note": "Capability map. On a 16GB box these pass through fleet_common.model_for(), which downgrades any 14B target to qwen3:8b under memory pressure (so 'moderate' is effectively 8B today). Once 64GB RAM lands, set FLEET_MODEL=qwen3:14b in ONE place and the 14B targets light up. gemma4:26b removed 2026-06-18 (too big for this hardware).",
+    "trivial": "qwen3:8b",
+    "simple": "qwen3:8b",
+    "moderate": "qwen3:8b",
+    "complex": "qwen3:14b",
+    "hard": "deepseek-r1:14b",
+    "user_facing_final": "qwen3:14b"
+  }
+}

@@ -5,13 +5,13 @@ agents that prepare a morning brief, watch the system, draft work overnight, and
 job hunt, plus a **two-way Telegram assistant** with an on-demand skill library — all on a
 **local LLM** (free, private). Built on **Hermes Agent v0.17.0, native Windows** (no WSL).
 
-> **Status (2026-07-29):** operational, native Windows, tested (**81 tests, all passing**).
+> **Status (2026-09-23):** operational, native Windows, tested (**226 tests, all passing**).
 
 ## What it does
 - **Morning brief → Telegram (7:00).** Leads with the day's ONE thing + cross-domain connections
   (job funnel vs. runway vs. health), job-hunt numbers, overnight drafts to review, fresh job
   listings, system status, and spaced-repetition recall questions.
-- **25 scheduled agents** (all local, free): chief-of-staff (brief), system-watchdog (/4h, self-heal
+- **30 scheduled agents** (all local, free): chief-of-staff (brief), system-watchdog (/4h, self-heal
   + `hermes doctor`), overnight-worker (drafts queued tasks, self-verifies), scout (free job
   discovery), learning (spaced repetition), finance + health (tracker nudges, never invents data),
   calendar (Google Calendar → today's events), weekly-review, harmony-backup, model-review,
@@ -28,7 +28,7 @@ job hunt, plus a **two-way Telegram assistant** with an on-demand skill library 
 ## Architecture (native Windows)
 ```
 Telegram  <->  Hermes gateway (native, %LOCALAPPDATA%\hermes)  <->  local Ollama (qwen3:8b, localhost:11434)
-                     |  in-process cron scheduler (13 jobs)
+                     |  in-process cron scheduler (30 jobs)
                      |  fleet-commands plugin (/fleet ...) + 9 skills
                      v
         comms/ blackboard (state.json, briefs, review/, .memory/, .srs)  <-  C:\Brian\02_Projects\brian-os-fleet
@@ -46,7 +46,7 @@ Telegram  <->  Hermes gateway (native, %LOCALAPPDATA%\hermes)  <->  local Ollama
 | `runtime/*.py` | the agents + shared core (`fleet_common.py`, OS-aware) → deployed to `%LOCALAPPDATA%\hermes\scripts` |
 | `runtime/plugins/fleet-commands/` | the Telegram slash-command plugin |
 | `runtime/skills/` | the chat-agent SKILL.md library |
-| `tests/` | 49 unit + smoke tests (stdlib only); CI in `.github/workflows/tests.yml` |
+| `tests/` | 226 unit + smoke tests (stdlib only); CI in `.github/workflows/tests.yml` |
 | `shared/` | model registry + routing policy (reference) |
 | `comms/` | runtime blackboard (gitignored runtime data) |
 | `runtime/_wsl_legacy/`, `_archive/` | historical WSL-era scripts/docs (not used) |

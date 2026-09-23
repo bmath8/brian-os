@@ -5,7 +5,7 @@ agents that prepare a morning brief, watch the system, draft work overnight, and
 job hunt, plus a **two-way Telegram assistant** with an on-demand skill library — all on a
 **local LLM** (free, private). Built on **Hermes Agent v0.17.0, native Windows** (no WSL).
 
-> **Status (2026-09-23):** operational, native Windows, tested (**226 tests, all passing**).
+> **Status (2026-09-23):** the live fleet is operational on native Windows — 30 agents registered and active, 226 tests passing (verified 2026-09-23 in the private working repo). **This public mirror is a 2026-07-29 snapshot:** 25 agent specs and 81 tests (80 pass, 1 skipped on Linux CI).
 
 ## What it does
 - **Morning brief → Telegram (7:00).** Leads with the day's ONE thing + cross-domain connections
@@ -46,7 +46,7 @@ Telegram  <->  Hermes gateway (native, %LOCALAPPDATA%\hermes)  <->  local Ollama
 | `runtime/*.py` | the agents + shared core (`fleet_common.py`, OS-aware) → deployed to `%LOCALAPPDATA%\hermes\scripts` |
 | `runtime/plugins/fleet-commands/` | the Telegram slash-command plugin |
 | `runtime/skills/` | the chat-agent SKILL.md library |
-| `tests/` | 226 unit + smoke tests (stdlib only); CI in `.github/workflows/tests.yml` |
+| `tests/` | 81 unit + smoke tests in this mirror (pytest); CI in `.github/workflows/tests.yml` |
 | `shared/` | model registry + routing policy (reference) |
 | `comms/` | runtime blackboard (gitignored runtime data) |
 | `runtime/_wsl_legacy/`, `_archive/` | historical WSL-era scripts/docs (not used) |

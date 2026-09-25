@@ -5,13 +5,19 @@ agents that prepare a morning brief, watch the system, draft work overnight, and
 job hunt, plus a **two-way Telegram assistant** with an on-demand skill library — all on a
 **local LLM** (free, private). Built on **Hermes Agent v0.17.0, native Windows** (no WSL).
 
-> **Status (2026-09-23):** the live fleet is operational on native Windows — 30 agents registered and active, 226 tests passing (verified 2026-09-23 in the private working repo). **This public mirror is a 2026-07-29 snapshot:** 25 agent specs and 81 tests (80 pass, 1 skipped on Linux CI).
+> **Status (measured 2026-09-24 in the private working repo):** 32 scheduled agents and a
+> 235-test suite with 0 failures. Not all 32 run daily: on 2026-09-24, 13 were active and 19
+> were paused while the fleet's LLM jobs move to local models.
+>
+> **This public mirror is a 2026-07-29 snapshot** and has its own, smaller numbers: 25 agent
+> specs and 81 tests (80 pass, 1 skipped). Clone it and run `python -m pytest tests -q` to
+> check them.
 
 ## What it does
 - **Morning brief → Telegram (7:00).** Leads with the day's ONE thing + cross-domain connections
   (job funnel vs. runway vs. health), job-hunt numbers, overnight drafts to review, fresh job
   listings, system status, and spaced-repetition recall questions.
-- **30 scheduled agents** (all local, free): chief-of-staff (brief), system-watchdog (/4h, self-heal
+- **32 scheduled agents** in the live fleet (all local, free): chief-of-staff (brief), system-watchdog (/4h, self-heal
   + `hermes doctor`), overnight-worker (drafts queued tasks, self-verifies), scout (free job
   discovery), learning (spaced repetition), finance + health (tracker nudges, never invents data),
   calendar (Google Calendar → today's events), weekly-review, harmony-backup, model-review,
@@ -28,7 +34,7 @@ job hunt, plus a **two-way Telegram assistant** with an on-demand skill library 
 ## Architecture (native Windows)
 ```
 Telegram  <->  Hermes gateway (native, %LOCALAPPDATA%\hermes)  <->  local Ollama (qwen3:8b, localhost:11434)
-                     |  in-process cron scheduler (30 jobs)
+                     |  in-process cron scheduler (32 jobs)
                      |  fleet-commands plugin (/fleet ...) + 9 skills
                      v
         comms/ blackboard (state.json, briefs, review/, .memory/, .srs)  <-  C:\Brian\02_Projects\brian-os-fleet

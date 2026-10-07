@@ -1,6 +1,6 @@
-# Brian OS — Agent Fleet
+# Brian OS
 
-A personal **always-on AI assistant fleet** that runs on Brian's own PC: a set of scheduled
+A **Windows automation system** that runs on Brian's own PC: a set of scheduled
 agents that prepare a morning brief, watch the system, draft work overnight, and track the
 job hunt, plus a **two-way Telegram assistant** with an on-demand skill library — all on a
 **local LLM** (free, private). Built on **Hermes Agent v0.17.0, native Windows** (no WSL).

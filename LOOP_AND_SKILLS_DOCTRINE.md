@@ -44,7 +44,7 @@ A **skill** = a folder with a `SKILL.md`: a header (`name` + `description` = *wh
 Steve / Builder.io (@Steve8708) open-sourced `/visual-plan` (plans as rich MDX: diagrams, interactive API specs, schema changes, annotated code, zoomable wireframes) and `/visual-recap` (same visual treatment for reviewing an agent's work / a PR). Thesis: "plans are the new intermediate representation" — review a wireframe before the agent codes.
 
 **Decision (cost/benefit): adopt ONLY for UI/frontend work.** It is genuinely better when there's a UI to see — but it costs **materially more tokens** than a plain-text plan (it generates MDX + components + diagrams).
-- ✅ Use on: portfolio, Boombox frontend, AI Job Hunter UI, any wireframe-able task.
+- ✅ Use on: portfolio, Boombox frontend, app UIs, any wireframe-able task.
 - ❌ Don't use on: the fleet, scripts, infra, backend, docs — there the lean `plan-first` (plain markdown) is correct and cheaper.
 - **Install lazily:** clone Steve8708's open-source skills into `~/.claude/skills/` only when we next start a UI task — not preemptively.
 - Token rule of thumb: default to the cheapest plan format that conveys the intent; reach for visual only when a picture genuinely saves back-and-forth.

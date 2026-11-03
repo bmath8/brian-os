@@ -25,7 +25,7 @@ personal trackers current, plus a **two-way Telegram assistant** with an on-dema
 - **Two-way Telegram control:** `/fleet` (status), `/addtask <task>`, `/approvedraft <id>`,
   `/rejectdraft <id>`, `/grade <id> 1|0`, `/snooze <agent> <days>`, `/research [text/url]`,
   `/watchlist [@handle]`.
-- **Chat-agent skills** (load on matching request): writing and outreach drafts,
+- **Chat-agent skills** (load on matching request): writing drafts,
   project-showcase, build-in-public, learn-and-retain, weekly-reflection, voice-match (drafts in
   Brian's voice).
 - **Local RAG memory** over Harmony + the fleet (nomic-embed), a **spaced-repetition learning

@@ -1,6 +1,6 @@
 ---
 name: voice-match
-description: Use whenever drafting anything in Brian's voice - job applications, outreach, LinkedIn/X posts, emails, messages, bios. Loads Brian's voice profile so drafts sound like him, not like generic AI. Other writing skills (job-application, outreach, build-in-public, application-follow-up) should apply this automatically.
+description: Use whenever drafting anything in Brian's voice - LinkedIn/X posts, emails, messages, bios. Loads Brian's voice profile so drafts sound like him, not like generic AI. Other writing skills (build-in-public, project-showcase) should apply this automatically.
 ---
 
 # Voice Match

@@ -12,9 +12,8 @@
 | 05 | finance | finance_agent.py | 6:50 daily | Runway + credit (Harmony) |
 | 06 | health | health_agent.py | 6:52 daily | Body-comp consistency (Harmony) |
 | 07 | weekly-review | weekly_review.py | Sun 17:00 | Sunday funnel + reflection |
-| 08 | scout | scout_agent.py | 6:40 daily | Free job/opportunity discovery |
+| 08 | scout | scout_agent.py | 6:40 daily | Free opportunity discovery |
 | 09 | calendar | calendar_agent.py | 6:55 daily | Google Calendar → today's events |
-| 10 | career | career_agent.py | 6:53 daily | Apps-vs-target, streak, follow-ups |
 | 11 | inbox | inbox_agent.py | 6:48 daily | Surfaces new Harmony/00_Inbox files |
 | 12 | dashboard | build_dashboard.py | :05 hourly | Live HTML dashboard |
 | 13 | currency | currency_agent.py | 6:58 Mon-Sat | Dep/security currency sweep |
@@ -22,7 +21,6 @@
 | 14 | research | research_agent.py | Sun 18:00 | Deep research digests |
 | 15 | wiki | wiki_agent.py | Sun 16:45 | Wiki/knowledge upkeep |
 | 16 | outcome-learner | outcome_learner.py | Sun 16:50 | Outcome → lesson extraction |
-| 17 | gig-scanner | gig_scanner.py | 7:10 Mon-Sat | Gig/contract leads |
 | 18 | ceo-report | ceo_report.py | 7:30 1st | Monthly CEO report |
 | 19 | fleet-health | log_analyzer.py | 6:59 daily | Fleet health from logs |
 | 20 | skill-miner | skill_miner.py | Sun 18:30 | Mines sessions → skill DRAFTS |

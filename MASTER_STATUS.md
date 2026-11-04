@@ -107,7 +107,6 @@ findings exist, not a crash); two `hermes_cli.*gateway` processes (healthy paren
 ### Strategy & docs
 - [x] `BrianOS_Standards/TECH_STACK_DECISIONS.md`: per-project hosting, scraping-levels ladder, tool-adoption filter.
 - [x] Tools judged: Firecrawl ✅adopted, Crawl4AI ✅live, Omma ▶portfolio, Photon/Factory ✗bookmarked.
-- [x] Vercel Eve evaluated + scaffold (`eve-eval/`).
 - [x] Disk cleanup (~8 GB reclaimed); ~80 GB free.
 
 ## 🟡 NEEDS BRIAN (can't be done without you — quick)

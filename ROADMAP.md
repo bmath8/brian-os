@@ -32,7 +32,6 @@ Nine scheduled agents, all local/free on qwen3:8b:
 ## ▶ Next (needs Brian or hardware)
 - [ ] **Fill tracker data** (Brian) — monthly expenses (→ real runway), health weekly log, job applications. Highest leverage; turns nudges into real status.
 - [ ] **64 GB DDR5 RAM** (optional) — more VRAM headroom for bigger local models. Model gating already lives in `fleet_common.model_for()` (VRAM-based); the old `safe_model.py` RAM-gate was retired 2026-07-15 (dead + WSL-path bug).
-- [ ] **Vercel Eve job-application agent** — do-together build (Node ≥24 via nvm + Vercel login). Scaffold ready in `eve-eval/`. Portfolio + income.
 - [ ] **Job Hunter agent** (future) — only if Brian wants fleet-side job sourcing; AI Job Hunter app already covers tailoring. Draft-only per Guardrails.
 - [x] **Scout agent** — DONE (daily, free DuckDuckGo discovery into the brief).
 

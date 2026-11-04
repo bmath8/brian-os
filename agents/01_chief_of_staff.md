@@ -19,7 +19,6 @@ _The hub. Assembles Brian's one morning brief from every other agent's output. T
 
 ## Output (writes)
 - `comms/daily_brief.md` (persisted + history in `comms/briefs/`).
-- Template lives in `prompts/daily_briefing_agent.md`.
 - Updates its slice of `state.json`.
 
 ## Escalation
